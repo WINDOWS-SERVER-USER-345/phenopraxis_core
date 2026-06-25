@@ -1,5 +1,4 @@
 package org.bandeng.phenopraxis_core;
-
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
@@ -39,11 +38,18 @@ public class Phenopraxis_core{
 
     public Phenopraxis_core() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+
         ModBlocks.register(modEventBus);
+
         ModItems.register(modEventBus);
+
         ModCreativeModeTabs.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
+
         MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {}
