@@ -1,0 +1,5 @@
+//一个书页目录
+//消耗20泥土和10铁
+//给予玩家一颗钻石
+
+//command : give @s minecraft:diamond 1
