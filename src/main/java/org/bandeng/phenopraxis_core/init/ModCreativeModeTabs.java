@@ -17,7 +17,7 @@ public class ModCreativeModeTabs {
 
 
     public static final RegistryObject<CreativeModeTab> PHENOPRAXIS =
-            CREATIVE_MODE_TABS.register("phenopraxia_core",
+            CREATIVE_MODE_TABS.register("tab_phenopraxia_core",
                     () -> CreativeModeTab.builder()
                             .icon(() -> new ItemStack(ModItems.RAW_MATERIAL.get()))
                             .title(Component.translatable("tab.phenopraxis_core"))
