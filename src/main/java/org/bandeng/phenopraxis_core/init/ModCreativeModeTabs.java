@@ -1,19 +1,17 @@
 package org.bandeng.phenopraxis_core.init;
 
-import net.minecraft.client.tutorial.Tutorial;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import org.bandeng.phenopraxis_core.Phenopraxis_core;
+import org.bandeng.phenopraxis_core.Phenopraxis;
 
 public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
-            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Phenopraxis_core.MODID);
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Phenopraxis.MODID);
 
 
     public static final RegistryObject<CreativeModeTab> PHENOPRAXIS =

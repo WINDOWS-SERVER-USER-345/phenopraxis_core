@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.bandeng.phenopraxis_core.Phenopraxis_core;
+import org.bandeng.phenopraxis_core.Phenopraxis;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -14,14 +14,18 @@ import java.util.function.Function;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS,
-                    Phenopraxis_core.MODID
+                    Phenopraxis.MODID
             );
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
+    // 把磁铁矿方块注册为物品
+    public static final RegistryObject<BlockItem> RAW_MATERIAL = ITEMS.register("raw_material",
 
-    public static final RegistryObject<Item> RAW_MATERIAL = registerItem("raw_material");
+            () -> new BlockItem(ModBlocks.RAW_MATERIAL_BLOCK.get(), new Item.Properties())
+
+    );
 
     private static RegistryObject<Item> registerItem(String name) {
         return ITEMS.register(name, () -> new Item(new Item.Properties()));

@@ -1,18 +1,13 @@
 {
-  "name": "钻石交易",
+  "name": "Early Energy",
   "icon": "minecraft:diamond",
   "category": "phenopraxis_core:root",
-  "sortnum": 1,
+  "read_by_default": false,
+  "sortnum": 0,
   "pages": [
     {
-      "type": "spotlight",
-      "item": "minecraft:diamond",
-      "title": "钻石交易",
-      "text": "通过献祭 20 个泥土和 10 个铁锭，你就能获得一颗闪亮的钻石！"
-    },
-    {
-      "type": "text",
-      "text": "所需材料：$(br2)泥土 × 20$(br)铁锭 × 10$(br2)将材料放入指定机器（或使用命令）即可兑换。"
+      "type": "patchouli:quest",
+      "text": "消耗 20 个泥土和 10 个铁锭，获得 10 颗钻石。$(br2)$(c:/quest 000)点击此处完成任务$(/c)"
     }
   ]
 }

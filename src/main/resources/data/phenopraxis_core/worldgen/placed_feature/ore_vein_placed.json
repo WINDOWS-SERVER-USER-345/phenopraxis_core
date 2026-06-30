@@ -1,0 +1,8 @@
+{
+  "feature": "phenopraxis_core:ore_vein",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
