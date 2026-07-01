@@ -83,12 +83,12 @@ public class FindVeinCommand {
         if (angle < 0) angle += 360;
 
         if (angle < 22.5 || angle >= 337.5) return "北 (Z-)";
-        if (angle < 67.5) return "东北";
+        if (angle < 67.5) return "东北(X+ Z-)";
         if (angle < 112.5) return "东 (X+)";
-        if (angle < 157.5) return "东南";
+        if (angle < 157.5) return "东南(X+ Z+)";
         if (angle < 202.5) return "南 (Z+)";
-        if (angle < 247.5) return "西南";
+        if (angle < 247.5) return "西南(X- Z+)";
         if (angle < 292.5) return "西 (X-)";
-        return "西北";
+        return "西北(X- Z-)";
     }
 }

@@ -2,7 +2,9 @@ package org.bandeng.phenopraxis_core.world.gen;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.tags.BiomeTags;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -42,10 +44,19 @@ public class OreVeinPlacer {
             return;
         }
 
-        // ===== 3. 生物群系过滤（赤铁矿只在山脉和河流生物群系生成） =====
-        if (type.id.equals("hematite")) {
+        // ===== 3. 生物群系过滤（数据驱动：从 JSON 的 biome_tags 字段读取） =====
+        if (!type.biomeTags.isEmpty()) {
             Holder<Biome> biome = level.getBiome(chunkOrigin);
-            if (!biome.is(BiomeTags.IS_MOUNTAIN) && !biome.is(BiomeTags.IS_RIVER)) {
+            boolean matchesAnyTag = false;
+            for (String tagStr : type.biomeTags) {
+                ResourceLocation tagLoc = ResourceLocation.tryParse(tagStr);
+                if (tagLoc != null && biome.is(TagKey.create(Registries.BIOME, tagLoc))) {
+                    matchesAnyTag = true;
+                    break;
+                }
+            }
+            if (!matchesAnyTag) {
+                Phenopraxis.LOGGER.debug("Skipped {} vein: biome does not match required tags {}", type.id, type.biomeTags);
                 return;
             }
         }
@@ -76,8 +87,8 @@ public class OreVeinPlacer {
         if (orePositions.isEmpty()) return;
 
         // ===== 7. 放置方块（根据距离分配浓度等级） =====
-        int coreRSq = coreRadius * coreRadius;
-        int edgeRSq = edgeRadius * edgeRadius;
+        long coreRSq = (long) coreRadius * coreRadius;
+        long edgeRSq = (long) edgeRadius * edgeRadius;
         int placedCount = 0;
 
         for (BlockPos pos : orePositions) {
@@ -85,7 +96,7 @@ public class OreVeinPlacer {
 
             BlockState blockState;
             if (type.getOreBlock() instanceof ConcentrationOreBlock concentrationOre) {
-                int distSq = (int) pos.distSqr(center);
+                long distSq = (long) pos.distSqr(center);
                 int tier;
                 if (distSq <= coreRSq) {
                     tier = 2; // 高浓度
@@ -118,8 +129,8 @@ public class OreVeinPlacer {
             int edgeRadius, double edgeDensity, RandomSource random) {
 
         List<BlockPos> positions = new ArrayList<>();
-        int coreRSq = coreRadius * coreRadius;
-        int edgeRSq = edgeRadius * edgeRadius;
+        long coreRSq = (long) coreRadius * coreRadius;
+        long edgeRSq = (long) edgeRadius * edgeRadius;
 
         for (int dx = -edgeRadius; dx <= edgeRadius; dx++) {
             for (int dy = -edgeRadius; dy <= edgeRadius; dy++) {

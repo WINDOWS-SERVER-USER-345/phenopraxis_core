@@ -14,7 +14,11 @@ import org.bandeng.phenopraxis_core.Phenopraxis;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class VeinTypeConfig implements ResourceManagerReloadListener {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -112,6 +116,9 @@ public class VeinTypeConfig implements ResourceManagerReloadListener {
         public String centerIndicator;
         public String color;
         public boolean enabled;
+        /** 生物群系标签过滤（可选），为空则不限制生物群系。例如 ["minecraft:is_mountain", "minecraft:is_river"] */
+        @SerializedName("biome_tags")
+        public List<String> biomeTags = Collections.emptyList();
 
         // ===== 便捷方法 =====
 

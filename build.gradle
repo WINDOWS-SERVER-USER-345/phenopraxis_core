@@ -118,10 +118,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
 
     maven {
-        url 'https://maven.blamejared.com'
+        url = 'https://maven.blamejared.com'
     }
     maven {
-        url 'https://www.cursemaven.com'
+        url = 'https://www.cursemaven.com'
         content {
             includeGroup 'curse.maven'
         }
@@ -163,7 +163,7 @@ tasks.named('jar', Jar).configure {
                     "Specification-Vendor"    : mod_authors,
                     "Specification-Version"   : "1", // We are version 1 of ourselves
                     "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.jar.archiveVersion,
+                    "Implementation-Version"  : project.jar.archiveVersion.get(),
                     "Implementation-Vendor"   : mod_authors,
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
     }
@@ -174,5 +174,5 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.compilerArgs += ["-Xlint:-removal"]
+    options.compilerArgs += ["-Xlint:all", "-Xlint:-removal", "-Xlint:-processing"]
 }

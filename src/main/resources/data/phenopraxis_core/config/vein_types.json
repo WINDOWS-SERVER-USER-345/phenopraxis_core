@@ -32,7 +32,8 @@
       "surface_indicator": "minecraft:red_sandstone",
       "center_indicator": "phenopraxis_core:hematite_ore",
       "color": "red",
-      "enabled": true
+      "enabled": true,
+      "biome_tags": ["minecraft:is_mountain", "minecraft:is_river"]
     }
   ]
 }

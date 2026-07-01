@@ -1,6 +1,5 @@
 package org.bandeng.phenopraxis_core.world.gen;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -9,11 +8,14 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import org.bandeng.phenopraxis_core.Phenopraxis;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * 自定义矿脉生成特征
  * 由 Minecraft 世界生成器调用，负责在特定区块尝试生成矿脉
  * 实际放置逻辑委托给 OreVeinPlacer
  */
+@ParametersAreNonnullByDefault
 public class OreVeinFeature extends Feature<NoneFeatureConfiguration> {
 
     public OreVeinFeature() {
