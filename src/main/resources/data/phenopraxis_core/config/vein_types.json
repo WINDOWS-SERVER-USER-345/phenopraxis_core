@@ -1,0 +1,38 @@
+{
+  "vein_types": [
+    {
+      "id": "magnetite",
+      "ore_block": "phenopraxis_core:magnetite_ore",
+      "weight": 2,
+      "min_height": 10,
+      "max_height": 50,
+      "core_radius": 10,
+      "core_density": 0.8,
+      "edge_radius": 18,
+      "edge_density": 0.3,
+      "min_grade": 0.65,
+      "max_grade": 0.72,
+      "surface_indicator": "minecraft:blackstone",
+      "center_indicator": "phenopraxis_core:magnetite_ore",
+      "color": "black",
+      "enabled": true
+    },
+    {
+      "id": "hematite",
+      "ore_block": "phenopraxis_core:hematite_ore",
+      "weight": 3,
+      "min_height": 20,
+      "max_height": 60,
+      "core_radius": 12,
+      "core_density": 0.75,
+      "edge_radius": 20,
+      "edge_density": 0.25,
+      "min_grade": 0.55,
+      "max_grade": 0.70,
+      "surface_indicator": "minecraft:red_sandstone",
+      "center_indicator": "phenopraxis_core:hematite_ore",
+      "color": "red",
+      "enabled": true
+    }
+  ]
+}

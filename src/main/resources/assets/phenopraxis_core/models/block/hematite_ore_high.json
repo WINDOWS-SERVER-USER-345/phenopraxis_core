@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": { "all": "phenopraxis_core:block/hematite_large_abundance_ore" }
+}

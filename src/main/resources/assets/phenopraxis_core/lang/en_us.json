@@ -1,5 +1,5 @@
 {
-  "item.phenopraxis_core.raw_material": "Raw Material",
-  "block.phenopraxis_core.raw_material_block": "Raw Material Block",
-  "tab.phenopraxis_core": "phenopraxis_core"
+  "creativetab.phenopraxis_core.main": "Phenopraxis Core",
+  "block.phenopraxis_core.magnetite_ore": "Magnetite Ore",
+  "block.phenopraxis_core.hematite_ore": "Hematite Ore"
 }

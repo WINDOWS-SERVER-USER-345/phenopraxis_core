@@ -1,91 +1,116 @@
 package org.bandeng.phenopraxis_core.world.gen;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bandeng.phenopraxis_core.Phenopraxis;
 import org.bandeng.phenopraxis_core.config.VeinGenConfig;
+import org.bandeng.phenopraxis_core.config.VeinTypeConfig;
+import org.bandeng.phenopraxis_core.config.VeinTypeConfig.VeinTypeData;
+import org.bandeng.phenopraxis_core.content.block.ConcentrationOreBlock;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 矿脉放置主逻辑
+ *
+ * <p>完全数据驱动，所有矿物类型从 {@link VeinTypeConfig} 读取。
+ * 浓度矿石（ConcentrationOreBlock）根据到矿脉中心的距离自动分配浓度等级：
+ * 核心区=高浓度，中间区=中浓度，边缘区=低浓度。</p>
+ */
 public class OreVeinPlacer {
 
-    // 每个区块生成矿脉的概率（约4%，即平均25个区块生成1个）
     private static final double CHANCE_PER_CHUNK = 0.04;
 
     public static void placeVeins(WorldGenLevel level, BlockPos chunkOrigin, RandomSource random) {
-        // 使用区块坐标作为种子，保证世界一致性
+        // ===== 1. 概率控制 =====
         long seed = level.getSeed() + chunkOrigin.getX() * 31L + chunkOrigin.getZ() * 17L;
         RandomSource chunkRandom = RandomSource.create(seed);
-
-        // 概率控制
         if (chunkRandom.nextDouble() > CHANCE_PER_CHUNK) {
             return;
         }
 
-        // 在区块内随机偏移（0~15）
+        // ===== 2. 选择矿脉类型 =====
+        VeinTypeData type = VeinTypeConfig.selectRandomType(chunkRandom);
+        if (type == null || !type.isValid()) {
+            return;
+        }
+
+        // ===== 3. 生物群系过滤（赤铁矿只在山脉和河流生物群系生成） =====
+        if (type.id.equals("hematite")) {
+            Holder<Biome> biome = level.getBiome(chunkOrigin);
+            if (!biome.is(BiomeTags.IS_MOUNTAIN) && !biome.is(BiomeTags.IS_RIVER)) {
+                return;
+            }
+        }
+
+        // ===== 4. 中心定位 =====
         int offsetX = chunkRandom.nextInt(16);
         int offsetZ = chunkRandom.nextInt(16);
-        // 随机选择矿脉类型
-        String type = selectVeinType(chunkRandom);
-        // 随机高度
-        int minY = VeinGenConfig.getMinHeight(type);
-        int maxY = VeinGenConfig.getMaxHeight(type);
-        int centerY = minY + chunkRandom.nextInt(maxY - minY + 1);
-
+        int centerY = type.minHeight + chunkRandom.nextInt(type.maxHeight - type.minHeight + 1);
         BlockPos center = new BlockPos(
                 chunkOrigin.getX() + offsetX,
                 centerY,
                 chunkOrigin.getZ() + offsetZ
         );
 
-        // 防止重叠
+        // ===== 5. 防重叠 =====
         if (VeinRegistry.isTooClose(center, VeinGenConfig.getMinVeinDistance())) {
             return;
         }
 
-        // 获取配置参数
-        int coreRadius = VeinGenConfig.getCoreRadius(type);
-        double coreDensity = VeinGenConfig.getCoreDensity(type);
-        int edgeRadius = VeinGenConfig.getEdgeRadius(type);
-        double edgeDensity = VeinGenConfig.getEdgeDensity(type);
-        double grade = VeinGenConfig.getMinGrade(type) +
-                chunkRandom.nextDouble() * (VeinGenConfig.getMaxGrade(type) - VeinGenConfig.getMinGrade(type));
+        // ===== 6. 生成矿石位置 =====
+        double grade = type.randomGrade(chunkRandom);
+        int coreRadius = type.coreRadius;
+        int edgeRadius = type.edgeRadius;
 
-        // 生成椭球体
         List<BlockPos> orePositions = generateEllipsoidOres(
-                center, coreRadius, coreDensity, edgeRadius, edgeDensity, chunkRandom
+                center, coreRadius, type.coreDensity, edgeRadius, type.edgeDensity, chunkRandom
         );
+        if (orePositions.isEmpty()) return;
 
-        if (orePositions.isEmpty()) {
-            return;
-        }
-
-        BlockState oreBlock = getOreBlock(type);
+        // ===== 7. 放置方块（根据距离分配浓度等级） =====
+        int coreRSq = coreRadius * coreRadius;
+        int edgeRSq = edgeRadius * edgeRadius;
         int placedCount = 0;
+
         for (BlockPos pos : orePositions) {
-            if (level.getBlockState(pos).is(Blocks.STONE) ||
-                    level.getBlockState(pos).is(Blocks.DEEPSLATE) ||
-                    level.getBlockState(pos).is(Blocks.ANDESITE) ||
-                    level.getBlockState(pos).is(Blocks.DIORITE) ||
-                    level.getBlockState(pos).is(Blocks.GRANITE)) {
-                level.setBlock(pos, oreBlock, 3);
-                placedCount++;
+            if (!isReplaceable(level.getBlockState(pos))) continue;
+
+            BlockState blockState;
+            if (type.getOreBlock() instanceof ConcentrationOreBlock concentrationOre) {
+                int distSq = (int) pos.distSqr(center);
+                int tier;
+                if (distSq <= coreRSq) {
+                    tier = 2; // 高浓度
+                } else if (distSq <= edgeRSq) {
+                    tier = 1; // 中浓度
+                } else {
+                    tier = 0; // 低浓度
+                }
+                blockState = concentrationOre.withTier(tier);
+            } else {
+                blockState = type.getOreBlock().defaultBlockState();
             }
+
+            level.setBlock(pos, blockState, 3);
+            placedCount++;
         }
 
-        if (placedCount == 0) {
-            return;
-        }
+        if (placedCount == 0) return;
 
-        VeinRegistry.registerVein(center, type, placedCount, grade);
+        // ===== 8. 注册账本 + 地表标识 =====
+        VeinRegistry.registerVein(center, type.id, placedCount, grade);
         SurfaceIndicator.place(level, center, type);
 
         Phenopraxis.LOGGER.info("Placed {} vein at {} with {} ores, grade {}%",
-                type, center, placedCount, String.format("%.1f", grade * 100));
+                type.id, center, placedCount, String.format("%.1f", grade * 100));
     }
 
     private static List<BlockPos> generateEllipsoidOres(
@@ -118,15 +143,9 @@ public class OreVeinPlacer {
         return positions;
     }
 
-    private static String selectVeinType(RandomSource random) {
-        double r = random.nextDouble();
-        return "raw_material_block";
-    }
-
-    private static BlockState getOreBlock(String type) {
-        switch (type.toLowerCase()) {
-            case "raw_material_block": return Blocks.RAW_IRON_BLOCK.defaultBlockState();
-            default: return Blocks.IRON_ORE.defaultBlockState();
-        }
+    private static boolean isReplaceable(BlockState state) {
+        return state.is(Blocks.STONE) || state.is(Blocks.DEEPSLATE) ||
+                state.is(Blocks.ANDESITE) || state.is(Blocks.DIORITE) ||
+                state.is(Blocks.GRANITE);
     }
 }

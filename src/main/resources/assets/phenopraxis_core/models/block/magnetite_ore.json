@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "phenopraxis_core:block/raw_material_block"
+    "all": "phenopraxis_core:block/magnetite_ore"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "concentration=0": { "model": "phenopraxis_core:block/magnetite_ore" },
+    "concentration=1": { "model": "phenopraxis_core:block/magnetite_ore" },
+    "concentration=2": { "model": "phenopraxis_core:block/magnetite_ore" }
+  }
+}

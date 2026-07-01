@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "concentration=0": { "model": "phenopraxis_core:block/hematite_ore_low" },
+    "concentration=1": { "model": "phenopraxis_core:block/hematite_ore_medium" },
+    "concentration=2": { "model": "phenopraxis_core:block/hematite_ore_high" }
+  }
+}

@@ -2,7 +2,7 @@
   "name": "科技树指南",
   "landing_text": "欢迎来到科技树的世界。",
   "version": 1,
-  "creative_tab": "phenopraxis_core:phenopraxia_core",
+  "creative_tab": "phenopraxis_core:phenopraxis_tab",
   "use_resource_pack": true,
 
   "book_texture": "patchouli:textures/gui/book_cyan.png",

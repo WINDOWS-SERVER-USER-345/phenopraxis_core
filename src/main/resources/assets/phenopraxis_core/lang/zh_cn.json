@@ -1,5 +1,5 @@
 {
-  "item.phenopraxis_core.raw_material": "粗材料",
-  "block.phenopraxis_core.raw_material_block": "粗材料块",
-  "tab.phenopraxis_core": "示例"
+  "creativetab.phenopraxis_core.main": "猜想核心",
+  "block.phenopraxis_core.magnetite_ore": "磁铁矿",
+  "block.phenopraxis_core.hematite_ore": "赤铁矿"
 }
